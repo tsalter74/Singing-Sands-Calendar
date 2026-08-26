@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Singing Sands: Calendar</title>
+<meta name="description" content="Boat-sharing schedule for the Pletzer and Salter families.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1420">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Singing Sands">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="harbor-glow" aria-hidden="true"></div>
+
+<header class="app-header">
+  <div class="title-row">
+    <svg class="mark" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+      <path d="M4 20 Q9 15 15 20 T26 20" stroke="var(--amber)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M8 14 L15 4 L22 14 Z" fill="none" stroke="var(--text)" stroke-width="1.6" stroke-linejoin="round"/>
+      <line x1="15" y1="4" x2="15" y2="22" stroke="var(--text)" stroke-width="1.6"/>
+    </svg>
+    <div>
+      <h1>Singing Sands<span>: Calendar</span></h1>
+      <p class="subtitle">Boat-sharing schedule</p>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 400 16" preserveAspectRatio="none">
+      <path d="M0 8 Q 25 0, 50 8 T 100 8 T 150 8 T 200 8 T 250 8 T 300 8 T 350 8 T 400 8"
+            fill="none" stroke="url(#waveGrad)" stroke-width="1.5"/>
+      <defs>
+        <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="var(--pletzer)"/>
+          <stop offset="50%" stop-color="var(--amber)"/>
+          <stop offset="100%" stop-color="var(--salter)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+</header>
+
+<main>
+  <nav class="legend" aria-label="Family key">
+    <span class="legend-item"><i class="swatch pletzer"></i>Pletzer</span>
+    <span class="legend-item"><i class="swatch salter"></i>Salter</span>
+  </nav>
+
+  <div class="controls">
+    <button id="btnToday" class="btn btn-today">Today</button>
+
+    <div class="range-nav">
+      <button id="btnPrev" class="btn btn-icon" aria-label="Previous">‹</button>
+      <span id="rangeLabel" class="range-label">Loading…</span>
+      <button id="btnNext" class="btn btn-icon" aria-label="Next">›</button>
+    </div>
+
+    <div class="view-toggle" role="group" aria-label="View mode">
+      <button id="btnWeekView" class="toggle-btn active" data-view="week">Week</button>
+      <button id="btnMonthView" class="toggle-btn" data-view="month">Month</button>
+    </div>
+  </div>
+
+  <section id="weekView" class="week-board"></section>
+
+  <section id="monthView" class="month-grid" hidden>
+    <div class="month-weekdays" id="monthWeekdays"></div>
+    <div class="month-days" id="monthDays"></div>
+  </section>
+
+  <button id="installBtn" class="btn btn-install" hidden>⇩ Install app</button>
+  <p id="iosHint" class="ios-hint" hidden>On iPhone/iPad: tap <strong>Share</strong> → <strong>Add to Home Screen</strong> to install.</p>
+</main>
+
+<footer class="app-footer">
+  <p>Alternating daily, starting 26 Aug 2026 — Pletzer’s day.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
