@@ -15,12 +15,6 @@
   const MONTH_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  const BOAT_SVG = `<svg class="boat-icon" width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-    <path d="M14.2 5 H15.4 V17.5 H14.2 Z"/>
-    <path d="M15.4 6.5 L21.5 9.5 L15.4 11.8 Z"/>
-    <path d="M6 19.5 L24 19.5 L20.5 26 H9.5 Z"/>
-  </svg>`;
-
   // ---- Settings (persisted locally on this device) ----------------------
   const SETTINGS_KEY = "singingSandsSettings";
   function loadSettings() {
@@ -116,7 +110,6 @@
           <div class="family-name">${fam.name}${isToday ? '<span class="today-tag">TODAY</span>' : ""}</div>
           <p class="has-boat">${WEEKDAY_LONG[date.getDay()]}, ${ordinal(date.getDate())} ${MONTH_LONG[date.getMonth()]} ${date.getFullYear()}</p>
         </div>
-        ${BOAT_SVG}
       `;
       el.weekView.appendChild(row);
     }
@@ -235,9 +228,19 @@
   });
 
   // ---- Install prompt (Android/desktop Chrome) -------------------------
+  // Launched from the home screen / app window rather than a browser tab?
+  function isInstalled() {
+    return window.matchMedia("(display-mode: standalone)").matches
+      || window.matchMedia("(display-mode: fullscreen)").matches
+      || window.matchMedia("(display-mode: minimal-ui)").matches
+      || window.navigator.standalone === true
+      || document.referrer.startsWith("android-app://");
+  }
+
   let deferredPrompt = null;
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
+    if (isInstalled()) return; // already installed, nothing to offer
     deferredPrompt = e;
     el.installBtn.hidden = false;
   });
@@ -252,8 +255,19 @@
 
   // iOS Safari has no beforeinstallprompt — show a manual hint instead.
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-  if (isIOS && !isStandalone) el.iosHint.hidden = false;
+  if (isIOS && !isInstalled()) el.iosHint.hidden = false;
+
+  // If the display mode changes mid-session (e.g. the user installs), tidy up.
+  if (isInstalled()) {
+    el.installBtn.hidden = true;
+    el.iosHint.hidden = true;
+  }
+  window.matchMedia("(display-mode: standalone)").addEventListener("change", (e) => {
+    if (e.matches) {
+      el.installBtn.hidden = true;
+      el.iosHint.hidden = true;
+    }
+  });
 
   // ---- Service worker ------------------------------------------------------
   if ("serviceWorker" in navigator) {

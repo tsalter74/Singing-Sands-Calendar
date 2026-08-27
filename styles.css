@@ -248,7 +248,6 @@ main {
 .day-row.is-past.pletzer { background: linear-gradient(90deg, var(--pletzer-faint), var(--surface) 40%); border-left-color: rgba(47, 174, 107, 0.45); }
 .day-row.is-past.salter { background: linear-gradient(90deg, var(--salter-faint), var(--surface) 40%); border-left-color: rgba(65, 105, 225, 0.45); }
 .day-row.is-past .family-name { color: var(--text-muted) !important; }
-.day-row.is-past .boat-icon path { fill: var(--text-faint) !important; }
 
 .date-block {
   font-family: var(--font-mono);
@@ -296,10 +295,6 @@ main {
   font-size: 0.76rem;
   color: var(--text-muted);
 }
-
-.boat-icon { flex-shrink: 0; opacity: 0.9; }
-.day-row.pletzer .boat-icon path { fill: var(--pletzer); }
-.day-row.salter .boat-icon path { fill: var(--salter); }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(6px); }
