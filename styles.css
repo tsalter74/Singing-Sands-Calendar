@@ -22,6 +22,11 @@
 
 * { box-sizing: border-box; }
 
+/* The hidden attribute must always win over any element's own display rule.
+   Without this, `display: flex/grid/block` silently overrides it and elements
+   stay visible even when JS sets `hidden`. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -227,6 +232,7 @@ main {
   flex-direction: column;
   gap: 8px;
 }
+.week-board[hidden] { display: none; }
 
 .day-row {
   display: flex;
@@ -303,6 +309,7 @@ main {
 
 /* Month grid */
 .month-grid { animation: rise 0.25s ease; }
+.month-grid[hidden] { display: none; }
 .month-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
