@@ -21,6 +21,24 @@
     <path d="M6 19.5 L24 19.5 L20.5 26 H9.5 Z"/>
   </svg>`;
 
+  // ---- Settings (persisted locally on this device) ----------------------
+  const SETTINGS_KEY = "singingSandsSettings";
+  function loadSettings() {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (!raw) return { weekStartDay: 1 }; // default Monday
+      const parsed = JSON.parse(raw);
+      const day = Number(parsed.weekStartDay);
+      return { weekStartDay: Number.isInteger(day) && day >= 0 && day <= 6 ? day : 1 };
+    } catch {
+      return { weekStartDay: 1 };
+    }
+  }
+  function saveSettings(settings) {
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch {}
+  }
+  let settings = loadSettings();
+
   // ---- Date helpers (local-midnight dates, no time component) --------
   function atMidnight(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
   function today() { return atMidnight(new Date()); }
@@ -30,6 +48,11 @@
   function dayDiff(a, b) {
     const msPerDay = 86400000;
     return Math.round((atMidnight(a) - atMidnight(b)) / msPerDay);
+  }
+  // The date of the configured week-start weekday, in the week containing `date`.
+  function startOfWeekFor(date, weekStartDay) {
+    const offset = (date.getDay() - weekStartDay + 7) % 7;
+    return addDays(date, -offset);
   }
 
   function familyForDate(date) {
@@ -46,7 +69,7 @@
 
   // ---- State ------------------------------------------------------------
   let viewMode = "week"; // 'week' | 'month'
-  let weekStart = today(); // start of the visible 7-day window
+  let weekStart = startOfWeekFor(today(), settings.weekStartDay); // start of the visible 7-day window
   let monthCursor = atMidnight(new Date(today().getFullYear(), today().getMonth(), 1));
 
   // ---- Elements ---------------------------------------------------------
@@ -63,6 +86,10 @@
     btnMonthView: document.getElementById("btnMonthView"),
     installBtn: document.getElementById("installBtn"),
     iosHint: document.getElementById("iosHint"),
+    btnSettings: document.getElementById("btnSettings"),
+    settingsOverlay: document.getElementById("settingsOverlay"),
+    btnCloseSettings: document.getElementById("btnCloseSettings"),
+    weekStartSelect: document.getElementById("weekStartSelect"),
   };
 
   // ---- Rendering: week view ----------------------------------------------
@@ -74,16 +101,16 @@
       const date = addDays(weekStart, i);
       const fam = familyForDate(date);
       const isToday = sameDate(date, t);
+      const isPast = !isToday && dayDiff(date, t) < 0;
 
       const row = document.createElement("div");
-      row.className = `day-row ${fam.key}${isToday ? " is-today" : ""}`;
+      row.className = `day-row ${fam.key}${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}`;
       row.style.animationDelay = `${i * 35}ms`;
 
       row.innerHTML = `
         <div class="date-block">
           <span class="dow">${WEEKDAY_SHORT[date.getDay()]}</span>
           <span class="dom">${date.getDate()}</span>
-          <span class="mon-yr">${MONTH_SHORT[date.getMonth()]} ${date.getFullYear()}</span>
         </div>
         <div class="day-info">
           <div class="family-name">${fam.name}${isToday ? '<span class="today-tag">TODAY</span>' : ""}</div>
@@ -112,14 +139,17 @@
 
   // ---- Rendering: month view ---------------------------------------------
   function renderMonth() {
-    el.monthWeekdays.innerHTML = WEEKDAY_SHORT.map(d => `<span>${d}</span>`).join("");
+    // Weekday header labels, reordered to start on the configured day.
+    const orderedLabels = [];
+    for (let i = 0; i < 7; i++) orderedLabels.push(WEEKDAY_SHORT[(settings.weekStartDay + i) % 7]);
+    el.monthWeekdays.innerHTML = orderedLabels.map(d => `<span>${d}</span>`).join("");
     el.monthDays.innerHTML = "";
 
     const t = today();
     const year = monthCursor.getFullYear();
     const month = monthCursor.getMonth();
     const firstOfMonth = new Date(year, month, 1);
-    const startOffset = firstOfMonth.getDay(); // 0 = Sunday
+    const startOffset = (firstOfMonth.getDay() - settings.weekStartDay + 7) % 7;
     const gridStart = addDays(firstOfMonth, -startOffset);
 
     // 6 rows x 7 cols = 42 cells covers any month layout
@@ -128,14 +158,15 @@
       const fam = familyForDate(date);
       const outside = date.getMonth() !== month;
       const isToday = sameDate(date, t);
+      const isPast = !isToday && dayDiff(date, t) < 0;
 
       const cell = document.createElement("button");
       cell.type = "button";
-      cell.className = `month-cell ${fam.key}${outside ? " outside" : ""}${isToday ? " is-today" : ""}`;
+      cell.className = `month-cell ${fam.key}${outside ? " outside" : ""}${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}`;
       cell.textContent = date.getDate();
       cell.setAttribute("aria-label", `${WEEKDAY_LONG[date.getDay()]}, ${MONTH_LONG[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} — ${fam.name}`);
       cell.addEventListener("click", () => {
-        weekStart = date;
+        weekStart = startOfWeekFor(date, settings.weekStartDay);
         setView("week");
       });
       el.monthDays.appendChild(cell);
@@ -160,7 +191,7 @@
   }
 
   function goToday() {
-    weekStart = today();
+    weekStart = startOfWeekFor(today(), settings.weekStartDay);
     setView("week");
   }
 
@@ -180,6 +211,28 @@
   el.btnNext.addEventListener("click", () => step(1));
   el.btnWeekView.addEventListener("click", () => setView("week"));
   el.btnMonthView.addEventListener("click", () => setView("month"));
+
+  // ---- Settings panel -----------------------------------------------------
+  function openSettings() {
+    el.weekStartSelect.value = String(settings.weekStartDay);
+    el.settingsOverlay.hidden = false;
+  }
+  function closeSettings() { el.settingsOverlay.hidden = true; }
+
+  el.btnSettings.addEventListener("click", openSettings);
+  el.btnCloseSettings.addEventListener("click", closeSettings);
+  el.settingsOverlay.addEventListener("click", (e) => {
+    if (e.target === el.settingsOverlay) closeSettings();
+  });
+  el.weekStartSelect.addEventListener("change", () => {
+    const day = Number(el.weekStartSelect.value);
+    settings.weekStartDay = day;
+    saveSettings(settings);
+    // Re-align the currently displayed week to the new start day, keeping
+    // it anchored to whichever date is currently in view.
+    weekStart = startOfWeekFor(weekStart, settings.weekStartDay);
+    if (viewMode === "week") renderWeek(); else renderMonth();
+  });
 
   // ---- Install prompt (Android/desktop Chrome) -------------------------
   let deferredPrompt = null;

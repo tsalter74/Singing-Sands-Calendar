@@ -24,20 +24,17 @@
 
 <header class="app-header">
   <div class="title-row">
-    <svg class="mark" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+    <svg class="mark" width="24" height="24" viewBox="0 0 30 30" aria-hidden="true">
       <path d="M4 20 Q9 15 15 20 T26 20" stroke="var(--amber)" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M8 14 L15 4 L22 14 Z" fill="none" stroke="var(--text)" stroke-width="1.6" stroke-linejoin="round"/>
       <line x1="15" y1="4" x2="15" y2="22" stroke="var(--text)" stroke-width="1.6"/>
     </svg>
-    <div>
-      <h1>Singing Sands<span>: Calendar</span></h1>
-      <p class="subtitle">Boat-sharing schedule</p>
-    </div>
+    <h1>Singing Sands<span>: Calendar</span></h1>
   </div>
 
   <div class="wave-divider" aria-hidden="true">
-    <svg viewBox="0 0 400 16" preserveAspectRatio="none">
-      <path d="M0 8 Q 25 0, 50 8 T 100 8 T 150 8 T 200 8 T 250 8 T 300 8 T 350 8 T 400 8"
+    <svg viewBox="0 0 400 10" preserveAspectRatio="none">
+      <path d="M0 5 Q 25 0, 50 5 T 100 5 T 150 5 T 200 5 T 250 5 T 300 5 T 350 5 T 400 5"
             fill="none" stroke="url(#waveGrad)" stroke-width="1.5"/>
       <defs>
         <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0">
@@ -51,23 +48,32 @@
 </header>
 
 <main>
-  <nav class="legend" aria-label="Family key">
-    <span class="legend-item"><i class="swatch pletzer"></i>Pletzer</span>
-    <span class="legend-item"><i class="swatch salter"></i>Salter</span>
-  </nav>
+  <div class="top-bar">
+    <nav class="legend" aria-label="Family key">
+      <span class="legend-item"><i class="swatch pletzer"></i>Pletzer</span>
+      <span class="legend-item"><i class="swatch salter"></i>Salter</span>
+    </nav>
 
-  <div class="controls">
-    <button id="btnToday" class="btn btn-today">Today</button>
-
-    <div class="range-nav">
-      <button id="btnPrev" class="btn btn-icon" aria-label="Previous">‹</button>
-      <span id="rangeLabel" class="range-label">Loading…</span>
-      <button id="btnNext" class="btn btn-icon" aria-label="Next">›</button>
+    <div class="top-bar-right">
+      <div class="view-toggle" role="group" aria-label="View mode">
+        <button id="btnWeekView" class="toggle-btn active" data-view="week">Week</button>
+        <button id="btnMonthView" class="toggle-btn" data-view="month">Month</button>
+      </div>
+      <button id="btnSettings" class="icon-btn" aria-label="Settings" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.5-2-3.4-2.4.6a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.3 2.7a7.6 7.6 0 0 0-1.7 1l-2.4-.6-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.5 2 3.4 2.4-.6a7.6 7.6 0 0 0 1.7 1L11 21h4l.3-2.7a7.6 7.6 0 0 0 1.7-1l2.4.6 2-3.4-2-1.5Z"/>
+        </svg>
+      </button>
     </div>
+  </div>
 
-    <div class="view-toggle" role="group" aria-label="View mode">
-      <button id="btnWeekView" class="toggle-btn active" data-view="week">Week</button>
-      <button id="btnMonthView" class="toggle-btn" data-view="month">Month</button>
+  <div class="nav-row">
+    <button id="btnToday" class="btn btn-today">Today</button>
+    <div class="range-nav">
+      <button id="btnPrev" class="btn-icon" aria-label="Previous">‹</button>
+      <span id="rangeLabel" class="range-label">Loading…</span>
+      <button id="btnNext" class="btn-icon" aria-label="Next">›</button>
     </div>
   </div>
 
@@ -85,6 +91,29 @@
 <footer class="app-footer">
   <p>Alternating daily, starting 26 Aug 2026 — Pletzer’s day.</p>
 </footer>
+
+<!-- Settings panel -->
+<div id="settingsOverlay" class="settings-overlay" hidden>
+  <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="settings-head">
+      <h2 id="settingsTitle">Settings</h2>
+      <button id="btnCloseSettings" class="icon-btn" aria-label="Close settings">✕</button>
+    </div>
+    <label class="settings-field">
+      <span>Week starts on</span>
+      <select id="weekStartSelect">
+        <option value="0">Sunday</option>
+        <option value="1">Monday</option>
+        <option value="2">Tuesday</option>
+        <option value="3">Wednesday</option>
+        <option value="4">Thursday</option>
+        <option value="5">Friday</option>
+        <option value="6">Saturday</option>
+      </select>
+    </label>
+    <p class="settings-note">Saved on this device only.</p>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>
