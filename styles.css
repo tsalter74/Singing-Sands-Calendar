@@ -58,7 +58,7 @@ body {
 .app-header {
   position: relative;
   z-index: 1;
-  padding: 14px 20px 0;
+  padding: 10px 18px 0;
   max-width: 640px;
   margin: 0 auto;
 }
@@ -75,7 +75,7 @@ h1 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.12rem;
   letter-spacing: 0.01em;
 }
 h1 span {
@@ -84,8 +84,8 @@ h1 span {
 }
 
 .wave-divider {
-  margin-top: 10px;
-  height: 8px;
+  margin-top: 7px;
+  height: 6px;
   opacity: 0.8;
 }
 .wave-divider svg { width: 100%; height: 100%; }
@@ -95,7 +95,7 @@ main {
   z-index: 1;
   max-width: 640px;
   margin: 0 auto;
-  padding: 10px 20px 32px;
+  padding: 8px 18px 16px;
 }
 
 /* Top bar: legend + view toggle + settings, one line */
@@ -104,7 +104,7 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 9px;
   flex-wrap: wrap;
 }
 
@@ -150,8 +150,8 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .btn {
@@ -162,7 +162,7 @@ main {
   background: var(--surface);
   border: 1px solid var(--hairline);
   border-radius: 10px;
-  padding: 8px 14px;
+  padding: 7px 13px;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
@@ -187,7 +187,7 @@ main {
   color: var(--text);
   font-size: 1.1rem;
   line-height: 1;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 8px;
   cursor: pointer;
 }
@@ -230,15 +230,15 @@ main {
 .week-board {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .week-board[hidden] { display: none; }
 
 .day-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
+  gap: 14px;
+  padding: 8px 14px;
   border-radius: 12px;
   border: 1px solid var(--hairline);
   border-left: 4px solid transparent;
@@ -270,15 +270,15 @@ main {
 }
 .date-block .dom {
   display: block;
-  font-size: 1.55rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .day-info { flex: 1; min-width: 0; }
 .family-name {
   font-family: var(--font-display);
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 700;
 }
 .day-row.pletzer .family-name { color: var(--pletzer); }
@@ -297,8 +297,8 @@ main {
   transform: translateY(-1px);
 }
 .has-boat {
-  margin: 2px 0 0;
-  font-size: 0.76rem;
+  margin: 1px 0 0;
+  font-size: 0.73rem;
   color: var(--text-muted);
 }
 
@@ -364,27 +364,19 @@ main {
 /* Install */
 .btn-install {
   display: block;
-  margin: 24px auto 0;
+  margin: 14px auto 0;
   background: var(--surface-2);
   border-color: var(--amber);
   color: var(--amber);
 }
 .ios-hint {
   text-align: center;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
-  margin-top: 14px;
+  margin-top: 10px;
   max-width: 320px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.app-footer {
-  text-align: center;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  padding: 0 20px 30px;
-  opacity: 0.65;
 }
 
 /* Settings panel */
